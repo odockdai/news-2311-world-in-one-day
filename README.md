@@ -5,11 +5,12 @@
 [![reward](https://make.fun/badge/news-image-20261123/odockdai/news-2311-world-in-one-day/reward.svg)](https://make.fun/bounty/news-image-20261123?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261123)
 
 One image that sums up the world's news of **Monday 23 November 2026**. The entry is a newspaper front
-page: a masthead with the weekday and date, an hour-by-hour timeline in UTC, three lead stories with a
-picture and a confirmation badge each, six second-rank cards, a dotted world map with numbered pins, an
-`ALSO ON MONDAY` list, and a `DATE CHECK` box that names what was deliberately left out.
+page built to stay readable at 300 pixels across: a masthead with the weekday and date, a market strip,
+an hour-by-hour timeline in UTC, three lead stories with a picture and a sourcing badge each, six
+second-rank cards that carry one line of substance, a dotted world map whose numbered pins match the
+stories, an `ALSO ON MONDAY` list, and a `DATE CHECK` box that names what was deliberately left out.
 
-## What the page carries — 15 stories, 6 continents, 11 fields
+## The page
 
 **Leads**
 
@@ -19,23 +20,27 @@ picture and a confirmation badge each, six second-rank cards, a dotted world map
 
 **Second rank**
 
+- Benghazi: a Russian corvette, the Merkury, docked in eastern Libya.
+- Khartoum: drones killed five children in the city.
+- Istanbul: protests after police raided a media outlet.
+- Baltic Sea: the tanker Sparta II was towed away.
+- Gaza: Oxfam called the territory a "toxic wasteland".
+- Brazil: Jair Bolsonaro was in intensive care.
+
+**Also on Monday**
+
 - Kathmandu: Nepal's new prime minister began his first visit to India.
 - Mercury: BepiColombo settled into orbit around the planet.
 - Arunachal: India and China opened ten days of border talks.
 - Washington: the Pentagon limited military ties with Canada.
 - Brussels: the EU drafted a tax on Big Tech in its next budget.
 - Strait of Hormuz: Iran staged 14 tankers against the US blockade.
-
-**Also on Monday**
-
-- Trump tried to call Kim Jong Un and was ignored (report).
-- Paolo Bulgari, the jeweller, died at 89 in Italy.
-- The US Army blew up unstable explosives in Iowa despite a court order.
 - Seattle was "outraged" over an ICE arrest of two passengers.
 - Nigeria: the Bayelsa boat toll reached 29; N250m was approved.
 - Denmark expelled a Russian attaché over an alleged plot.
 - Poland said Russia tried twice to kill a Ukrainian rapper.
 - South Korea's education minister resigned over AI cheating rules.
+- Paolo Bulgari, the jeweller, died at 89 in Italy.
 
 ## Date check
 
@@ -54,9 +59,11 @@ Badges: `CONFIRMED` means two or more outlets, `OFFICIAL` means the body itself,
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts   # copies entry.png to out/entry.png
 ```
 
-`main.ts` copies the committed `entry.png` byte for byte, so both grader runs write the same file. It
-checks the PNG signature and the 1 MiB limit before copying. The poster is drawn offline by
-`dev/make_frontpage.py` (Pillow) and committed as `entry.png`; nothing is generated at run time.
+`main.ts` copies the committed `entry.png` byte for byte, so both grader runs write the same file. Before
+copying it checks the PNG signature, the 1 MiB size limit and the 1024 by 1024 pixel limit, and it fails
+loudly rather than shipping a file the gate would refuse. The front page is drawn offline by
+`dev/make_frontpage6.py` (Pillow) and committed as `entry.png`; nothing is generated at run time, so the
+run needs no network, clock or randomness.
 
 ---
 
