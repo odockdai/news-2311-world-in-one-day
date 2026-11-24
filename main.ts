@@ -1,11 +1,13 @@
 // make.fun · news-image-20261123
 // "Monday 23 November 2026: the world in one day"
 //
-// The deliverable is entry.png, committed beside this file. The program only copies those exact bytes to
-// <MAKEFUN_OUTPUT_DIR ?? /output>/entry.png, so the grader's two runs write identical files and the run
-// needs no network, no clock and no randomness.
+// The deliverable is entry.png, committed beside this file. This program verifies the picture against
+// the grader's gates and then copies its exact bytes to <MAKEFUN_OUTPUT_DIR ?? /output>/entry.png, so
+// two runs write identical files and the run needs no network, no clock and no randomness.
 //
-// The front page itself is drawn offline by dev/make_frontpage6.py (Pillow) and committed as entry.png.
+// The front page itself is drawn offline by dev/make_frontpage11.py (Pillow) and committed as
+// entry.png. This checker duplicates the three gates the kit names — PNG signature, at most 1 MiB,
+// at most 1024 by 1024 — so a wrong file fails here before the grader ever sees it.
 //
 // Locally:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
@@ -21,8 +23,10 @@ const TARGET = join(OUT_DIR, 'entry.png');
 
 const PNG_MAGIC = '89504e470d0a1a0a';
 const MAX_BYTES = 1024 * 1024;
+const MAX_PIXELS = 1024;
 
-// Read the first eight bytes without slurping the whole file: the gate tells a PNG from a JPEG there.
+// Read the first `count` bytes without slurping the whole file: the gate tells a PNG from a JPEG in
+// the signature, and the IHDR width and height sit right after it.
 function firstBytes(path: string, count: number): string {
   const fd = openSync(path, 'r');
   try {
@@ -43,7 +47,9 @@ if (firstBytes(SOURCE, 8) !== PNG_MAGIC) throw new Error('entry.png does not sta
 const ihdr = firstBytes(SOURCE, 24);
 const width = parseInt(ihdr.slice(32, 40), 16);
 const height = parseInt(ihdr.slice(40, 48), 16);
-if (width > 1024 || height > 1024) throw new Error(`entry.png is ${width}x${height}, over the 1024x1024 gate`);
+if (width > MAX_PIXELS || height > MAX_PIXELS) {
+  throw new Error(`entry.png is ${width}x${height}, over the ${MAX_PIXELS}x${MAX_PIXELS} gate`);
+}
 
 mkdirSync(OUT_DIR, { recursive: true });
 copyFileSync(SOURCE, TARGET);
